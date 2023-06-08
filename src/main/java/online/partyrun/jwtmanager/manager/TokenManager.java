@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import online.partyrun.jwtmanager.dto.JwtPayload;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.sql.Timestamp;
@@ -20,18 +21,33 @@ public class TokenManager {
     private static final String ID = "id";
 
     Key key;
-    long expireSecond;
+    long expireSeconds;
     Clock clock;
 
-    public TokenManager(String key, long expireSecond, Clock clock) {
+    public TokenManager(String key, long expireSeconds, Clock clock) {
+        validateExpireSecond(expireSeconds);
+
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
-        this.expireSecond = expireSecond;
+        this.expireSeconds = expireSeconds;
         this.clock = clock;
     }
 
+    private void validateExpireSecond(long expireSecond) {
+        if (expireSecond <= 0) {
+            throw new IllegalArgumentException("expire seconds는 0보다 커야합니다.");
+        }
+    }
+
     public String generate(String id) {
+        validateId(id);
         final Claims claims = getClaims(id);
-        return generateToken(claims, expireSecond);
+        return generateToken(claims, expireSeconds);
+    }
+
+    private void validateId(String id) {
+        if (!StringUtils.hasText(id)) {
+            throw new IllegalArgumentException("id는 빈 값 일 수 없습니다.");
+        }
     }
 
     private Claims getClaims(String id) {
