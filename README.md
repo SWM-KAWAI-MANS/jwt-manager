@@ -1,6 +1,6 @@
 # jwt-manager
 
-![jwt-manager](https://socialify.git.ci/SWM-KAWAI-MANS/jwt-manager/image?font=KoHo&language=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Dark)
+![jwt-manager](https://socialify.git.ci/SWM-KAWAI-MANS/jwt-manager/image?description=1&descriptionEditable=&font=Raleway&language=1&name=1&owner=1&pattern=Floating%20Cogs&stargazers=1&theme=Light)
 
 ### Description
 jwt-manager is a library that simplifies the generation of JWT access tokens and refresh tokens. It provides an easy way to manage JWT token generation and parsing within your applications. By utilizing jwt-manager, you can enhance the security of your token-based authentication system by registering JWT secret keys. Additionally, you have the flexibility to set token expiration times to meet your specific requirements.
