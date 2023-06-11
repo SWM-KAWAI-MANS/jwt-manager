@@ -1,1 +1,2 @@
 online.partyrun.jwtmanager.config.JwtConfig
+online.partyrun.jwtmanager.controller.JwtControllerAdvice
