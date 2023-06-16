@@ -5,21 +5,18 @@ import lombok.experimental.FieldDefaults;
 import online.partyrun.jwtmanager.dto.JwtToken;
 import org.junit.jupiter.api.*;
 
-import java.time.Clock;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("JwtManagerTest 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class JwtManagerTest {
-    Clock clock = Clock.systemDefaultZone();
     String accessKey = "accessdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasd";
     long accessExpireSeconds = 2_592_000;
     String refreshKey = "refreshaasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdasdasdasdadasd";
     long refreshExpireSeconds = 7_776_000;
-    TokenManager accessTokenManager = new TokenManager(accessKey,accessExpireSeconds,clock);
-    TokenManager refreshTokenManager = new TokenManager(refreshKey,refreshExpireSeconds,clock);
+    TokenManager accessTokenManager = new TokenManager(accessKey,accessExpireSeconds);
+    TokenManager refreshTokenManager = new TokenManager(refreshKey,refreshExpireSeconds);
 
     JwtManager jwtManager = new JwtManager(accessTokenManager, refreshTokenManager);
     String id = "asdf";

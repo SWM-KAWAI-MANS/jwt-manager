@@ -12,7 +12,6 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.sql.Timestamp;
-import java.time.Clock;
 import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,14 +21,12 @@ public class TokenManager {
 
     Key key;
     long expireSeconds;
-    Clock clock;
 
-    public TokenManager(String key, long expireSeconds, Clock clock) {
+    public TokenManager(String key, long expireSeconds) {
         validateExpireSecond(expireSeconds);
 
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
         this.expireSeconds = expireSeconds;
-        this.clock = clock;
     }
 
     private void validateExpireSecond(long expireSecond) {
@@ -57,8 +54,7 @@ public class TokenManager {
     }
 
     private String generateToken(Claims claims, long expireSecond) {
-        final LocalDateTime now = LocalDateTime.now(clock);
-        final LocalDateTime expireAt = now.plusSeconds(expireSecond);
+        final LocalDateTime expireAt = LocalDateTime.now().plusSeconds(expireSecond);
 
         return Jwts.builder()
                 .setSubject(claims.get(ID, String.class))

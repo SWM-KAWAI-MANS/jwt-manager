@@ -9,18 +9,12 @@ import online.partyrun.jwtmanager.manager.TokenManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-
-import java.time.Clock;
 
 @Slf4j
 @AutoConfiguration
 @RequiredArgsConstructor
-@Import(ClockConfig.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtConfig {
-
-    Clock clock;
 
     @Bean
     public JwtManager jwtManager(@Value("${jwt.access-secret-key}") String accessKey,
@@ -33,6 +27,6 @@ public class JwtConfig {
     }
 
     private TokenManager tokenManager(String key, long tokenExpireSecond) {
-        return new TokenManager(key, tokenExpireSecond, clock);
+        return new TokenManager(key, tokenExpireSecond);
     }
 }

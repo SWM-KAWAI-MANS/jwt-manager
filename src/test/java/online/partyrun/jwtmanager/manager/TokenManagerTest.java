@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -25,8 +24,7 @@ class TokenManagerTest {
     String id = "1";
     String key = "asdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasd";
     long expireSeconds = 2_592_000;
-    Clock clock = Clock.systemDefaultZone();
-    TokenManager tokenManager = new TokenManager(key, expireSeconds, clock);
+    TokenManager tokenManager = new TokenManager(key, expireSeconds);
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -40,7 +38,7 @@ class TokenManagerTest {
             @ValueSource(longs = {-1, 0})
             @DisplayName("예외를 반환한다.")
             void throwException(long expireSeconds) {
-                assertThatThrownBy(() -> new TokenManager(key, expireSeconds, clock))
+                assertThatThrownBy(() -> new TokenManager(key, expireSeconds))
                         .isInstanceOf(IllegalArgumentException.class);
             }
         }
@@ -92,7 +90,7 @@ class TokenManagerTest {
                 assertAll(
                         () -> assertThat(result.id()).isEqualTo(id),
                         () -> assertThat(result.expireAt())
-                                .isEqualTo(LocalDateTime.now(clock)
+                                .isEqualTo(LocalDateTime.now()
                                         .plusSeconds(expireSeconds)
                                         .truncatedTo(ChronoUnit.SECONDS))
                 );
