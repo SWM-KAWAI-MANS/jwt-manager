@@ -1,7 +1,9 @@
 package online.partyrun.jwtmanager.controller;
 
 import io.jsonwebtoken.JwtException;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ public class JwtControllerAdvice {
     @ExceptionHandler({JwtException.class, IllegalArgumentException.class})
     public ResponseEntity<ExceptionResponse> handleJwtException(RuntimeException exception) {
         log.error("{}", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse("승인되지 않은 요청입니다."));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ExceptionResponse("승인되지 않은 요청입니다."));
     }
 }

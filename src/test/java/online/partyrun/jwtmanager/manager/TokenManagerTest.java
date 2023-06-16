@@ -1,10 +1,15 @@
 package online.partyrun.jwtmanager.manager;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -16,14 +21,12 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 @DisplayName("TokenManager 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 class TokenManagerTest {
 
-    String key = "asdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasd";
+    String key =
+            "asdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasd";
     long expireSeconds = 2_592_000;
     TokenManager tokenManager = new TokenManager(key, expireSeconds);
     Map<String, Object> payload = Map.of("id", "박현준", "role", "admin");
@@ -87,14 +90,17 @@ class TokenManagerTest {
             void returnJwtPayload() {
                 final Claims claims = tokenManager.extract(accessToken);
 
-                LocalDateTime actualExpiration = new Timestamp(claims.getExpiration().getTime()).toLocalDateTime();
+                LocalDateTime actualExpiration =
+                        new Timestamp(claims.getExpiration().getTime()).toLocalDateTime();
                 LocalDateTime expectedExpiration = LocalDateTime.now().plusSeconds(expireSeconds);
 
                 assertAll(
                         () -> assertThat(claims).containsEntry("id", "박현준"),
                         () -> assertThat(claims).containsEntry("role", "admin"),
-                        () -> assertThat(actualExpiration).isCloseTo(expectedExpiration, within(1, ChronoUnit.SECONDS))
-                );
+                        () ->
+                                assertThat(actualExpiration)
+                                        .isCloseTo(
+                                                expectedExpiration, within(1, ChronoUnit.SECONDS)));
             }
         }
 
@@ -115,7 +121,7 @@ class TokenManagerTest {
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class accessToken이_형식이_잘못됐으면 {
             @ParameterizedTest
-            @ValueSource(strings = {"qwer.adsf.zxcv","invaild token"})
+            @ValueSource(strings = {"qwer.adsf.zxcv", "invaild token"})
             @DisplayName("예외를 반환한다.")
             void throwException(String accessToken) {
                 assertThatThrownBy(() -> tokenManager.extract(accessToken))
@@ -125,8 +131,9 @@ class TokenManagerTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class accessToken이_만료되었으면{
-            String expiredAccessToken = "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImlkIiwiZXhwIjoxNjg2OTI4MjUzfQ.G1NDOOCDGUcqX0t4gE9XiHyzAHiof7L9iPVpvQ2nTlFSv8W7ln_nl8lE2buIXq0Qc_kIrs47hVpYBzR3qfkNGw";
+        class accessToken이_만료되었으면 {
+            String expiredAccessToken =
+                    "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImlkIiwiZXhwIjoxNjg2OTI4MjUzfQ.G1NDOOCDGUcqX0t4gE9XiHyzAHiof7L9iPVpvQ2nTlFSv8W7ln_nl8lE2buIXq0Qc_kIrs47hVpYBzR3qfkNGw";
 
             @Test
             @DisplayName("예외를 반환한다.")
