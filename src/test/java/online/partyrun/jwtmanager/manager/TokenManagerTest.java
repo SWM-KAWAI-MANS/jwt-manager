@@ -1,5 +1,6 @@
 package online.partyrun.jwtmanager.manager;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -119,6 +120,19 @@ class TokenManagerTest {
             void throwException(String accessToken) {
                 assertThatThrownBy(() -> tokenManager.extract(accessToken))
                         .isInstanceOf(MalformedJwtException.class);
+            }
+        }
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class accessToken이_만료되었으면{
+            String expiredAccessToken = "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImlkIiwiZXhwIjoxNjg2OTI4MjUzfQ.G1NDOOCDGUcqX0t4gE9XiHyzAHiof7L9iPVpvQ2nTlFSv8W7ln_nl8lE2buIXq0Qc_kIrs47hVpYBzR3qfkNGw";
+
+            @Test
+            @DisplayName("예외를 반환한다.")
+            void throwException() {
+                assertThatThrownBy(() -> tokenManager.extract(expiredAccessToken))
+                        .isInstanceOf(ExpiredJwtException.class);
             }
         }
     }
