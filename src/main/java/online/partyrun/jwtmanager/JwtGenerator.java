@@ -5,7 +5,7 @@ import online.partyrun.jwtmanager.dto.JwtToken;
 import java.util.Map;
 
 public interface JwtGenerator {
-    JwtToken generate(Map<String, Object> items);
+    JwtToken generate(Map<String, Object> payload);
 
     String generateAccessToken(String refreshToken);
 }
