@@ -7,17 +7,15 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import online.partyrun.jwtmanager.dto.JwtPayload;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TokenManager {
-
-    private static final String ID = "id";
 
     Key key;
     long expireSeconds;
@@ -35,44 +33,43 @@ public class TokenManager {
         }
     }
 
-    public String generate(String id) {
-        validateId(id);
-        final Claims claims = getClaims(id);
+    public String generate(Map<String, Object> payload) {
+        validatePayload(payload);
+        validateKeys(payload.keySet());
+        validateValues(payload.values());
+        final Claims claims = Jwts.claims(payload);
         return generateToken(claims, expireSeconds);
     }
 
-    private void validateId(String id) {
-        if (!StringUtils.hasText(id)) {
-            throw new IllegalArgumentException("id는 빈 값 일 수 없습니다.");
+    private void validatePayload(Map<String, Object> payload) {
+        if (Objects.isNull(payload)) {
+            throw new IllegalArgumentException("payload는 빈 값일 수 없습니다.");
         }
     }
 
-    private Claims getClaims(String id) {
-        final Claims claims = Jwts.claims();
-        claims.put(ID, id);
-        return claims;
+    private void validateKeys(Set<String> keys) {
+        if (!keys.stream().allMatch(StringUtils::hasText)) {
+            throw new IllegalArgumentException("key는 빈 값일 수 없습니다.");
+        }
+    }
+
+    private void validateValues(Collection<Object> values) {
+        if (values.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("values는 빈 값일 수 없습니다.");
+        }
     }
 
     private String generateToken(Claims claims, long expireSecond) {
         final LocalDateTime expireAt = LocalDateTime.now().plusSeconds(expireSecond);
 
         return Jwts.builder()
-                .setSubject(claims.get(ID, String.class))
                 .setClaims(claims)
-                .setExpiration(Timestamp.valueOf(expireAt))
+                .setExpiration(Date.from(expireAt.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public JwtPayload extract(String accessToken) {
-        final Claims claims = parseClaims(accessToken);
-        final String id = claims.get(ID, String.class);
-        final LocalDateTime expireAt = new Timestamp(claims.getExpiration().getTime()).toLocalDateTime();
-
-        return new JwtPayload(id, expireAt);
-    }
-
-    private Claims parseClaims(String accessToken) {
+    public Claims extract(String accessToken) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
