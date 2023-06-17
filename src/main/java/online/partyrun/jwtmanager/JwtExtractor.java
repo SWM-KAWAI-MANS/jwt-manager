@@ -1,7 +1,7 @@
 package online.partyrun.jwtmanager;
 
-import io.jsonwebtoken.Claims;
+import online.partyrun.jwtmanager.dto.JwtPayload;
 
 public interface JwtExtractor {
-    Claims extract(String accessToken);
+    JwtPayload extract(String accessToken);
 }

@@ -1,25 +1,24 @@
 package online.partyrun.jwtmanager.manager;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-
+import online.partyrun.jwtmanager.dto.JwtPayload;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("TokenManager 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -29,7 +28,9 @@ class TokenManagerTest {
             "asdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasdadasdasdasdadasd";
     long expireSeconds = 2_592_000;
     TokenManager tokenManager = new TokenManager(key, expireSeconds);
-    Map<String, Object> payload = Map.of("id", "박현준", "role", "admin");
+    String id = "박현준";
+    String role1 = "admin";
+    String role2 = "user";
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -54,23 +55,35 @@ class TokenManagerTest {
     class generate_메서드는 {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class payload가_주어지면 {
+        class id와_role이_주어지면 {
             @Test
             @DisplayName("jwt 토큰을 반환한다.")
             void returnToken() {
-                final String generate = tokenManager.generate(payload);
+                final String generate = tokenManager.generate(id, Set.of(role1, role2));
                 assertThat(generate.split("\\.")).hasSize(3);
             }
         }
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class payload가_null이면 {
+        class id가_null이면 {
 
             @Test
             @DisplayName("예외를 반환한다.")
             void throwException() {
-                assertThatThrownBy(() -> tokenManager.generate(null))
+                assertThatThrownBy(() -> tokenManager.generate(null, Set.of(role1, role2)))
+                        .isInstanceOf(IllegalArgumentException.class);
+            }
+        }
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class role이_빈_값이면 {
+
+            @Test
+            @DisplayName("예외를 반환한다.")
+            void throwException() {
+                assertThatThrownBy(() -> tokenManager.generate(id, Set.of(role1, "")))
                         .isInstanceOf(IllegalArgumentException.class);
             }
         }
@@ -83,24 +96,17 @@ class TokenManagerTest {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class accessToken이_주어지면 {
-            String accessToken = tokenManager.generate(payload);
+            String accessToken = tokenManager.generate(id, List.of(role1, role2));
 
             @Test
             @DisplayName("JwtPayload를 반환한다")
             void returnJwtPayload() {
-                final Claims claims = tokenManager.extract(accessToken);
-
-                LocalDateTime actualExpiration =
-                        new Timestamp(claims.getExpiration().getTime()).toLocalDateTime();
-                LocalDateTime expectedExpiration = LocalDateTime.now().plusSeconds(expireSeconds);
+                JwtPayload jwtPayload = tokenManager.extract(accessToken);
 
                 assertAll(
-                        () -> assertThat(claims).containsEntry("id", "박현준"),
-                        () -> assertThat(claims).containsEntry("role", "admin"),
-                        () ->
-                                assertThat(actualExpiration)
-                                        .isCloseTo(
-                                                expectedExpiration, within(1, ChronoUnit.SECONDS)));
+                        () -> assertThat(jwtPayload.id()).isEqualTo(id),
+                        () -> assertThat(jwtPayload.expireAt()).isEqualTo(LocalDateTime.now().plusSeconds(expireSeconds).truncatedTo(ChronoUnit.SECONDS)),
+                        () -> assertThat(jwtPayload.roles()).containsExactly(role1, role2));
             }
         }
 

@@ -2,10 +2,8 @@ package online.partyrun.jwtmanager;
 
 import online.partyrun.jwtmanager.dto.JwtToken;
 
-import java.util.Map;
-
 public interface JwtGenerator {
-    JwtToken generate(Map<String, Object> payload);
+    JwtToken generate(String id, String... roles);
 
     String generateAccessToken(String refreshToken);
 }
