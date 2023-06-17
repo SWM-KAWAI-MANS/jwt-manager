@@ -19,12 +19,10 @@ public class JwtManager implements JwtGenerator, JwtExtractor {
     TokenManager refreshTokenManager;
 
     @Override
-    public JwtToken generate(String id, String... roles) {
-        final Set<String> nonDuplicatedRoles = Set.of(roles);
-
+    public JwtToken generate(String id, Set<String> roles) {
         return JwtToken.builder()
-                .accessToken(accessTokenManager.generate(id, nonDuplicatedRoles))
-                .refreshToken(refreshTokenManager.generate(id, nonDuplicatedRoles))
+                .accessToken(accessTokenManager.generate(id, roles))
+                .refreshToken(refreshTokenManager.generate(id, roles))
                 .build();
     }
 

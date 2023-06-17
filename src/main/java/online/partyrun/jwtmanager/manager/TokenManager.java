@@ -21,6 +21,7 @@ import java.util.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TokenManager {
+    static int MIN_EXPIRE_SECONDS = 1;
     static String ID = "id";
     static String ROLE = "role";
 
@@ -35,7 +36,7 @@ public class TokenManager {
     }
 
     private void validateExpireSecond(long expireSecond) {
-        if (expireSecond <= 0) {
+        if (expireSecond < MIN_EXPIRE_SECONDS) {
             throw new IllegalArgumentException("expire seconds는 0보다 커야합니다.");
         }
     }
@@ -55,7 +56,7 @@ public class TokenManager {
 
     private void validateRoles(Collection<String> roles) {
         if (!roles.stream().allMatch(StringUtils::hasText)) {
-            throw new IllegalArgumentException(String.format("%s은 빈 값일 수 없습니다.", ROLE));
+            throw new IllegalArgumentException(String.format("%s 은 빈 값일 수 없습니다.", roles));
         }
     }
 

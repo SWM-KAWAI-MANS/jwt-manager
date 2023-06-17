@@ -1,17 +1,10 @@
 package online.partyrun.jwtmanager.manager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-
 import online.partyrun.jwtmanager.dto.JwtPayload;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -20,8 +13,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("TokenManager 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,8 +28,7 @@ class TokenManagerTest {
     long expireSeconds = 2_592_000;
     TokenManager tokenManager = new TokenManager(key, expireSeconds);
     String id = "박현준";
-    String role1 = "admin";
-    String role2 = "user";
+    Set<String> roles = Set.of("admin", "user");
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -62,7 +57,7 @@ class TokenManagerTest {
             @Test
             @DisplayName("jwt 토큰을 반환한다.")
             void returnToken() {
-                final String generate = tokenManager.generate(id, Set.of(role1, role2));
+                final String generate = tokenManager.generate(id, roles);
                 assertThat(generate.split("\\.")).hasSize(3);
             }
         }
@@ -74,7 +69,7 @@ class TokenManagerTest {
             @Test
             @DisplayName("예외를 반환한다.")
             void throwException() {
-                assertThatThrownBy(() -> tokenManager.generate(null, Set.of(role1, role2)))
+                assertThatThrownBy(() -> tokenManager.generate(null, roles))
                         .isInstanceOf(IllegalArgumentException.class);
             }
         }
@@ -86,7 +81,7 @@ class TokenManagerTest {
             @Test
             @DisplayName("예외를 반환한다.")
             void throwException() {
-                assertThatThrownBy(() -> tokenManager.generate(id, Set.of(role1, "")))
+                assertThatThrownBy(() -> tokenManager.generate(id, Set.of("박현준", "")))
                         .isInstanceOf(IllegalArgumentException.class);
             }
         }
@@ -99,7 +94,7 @@ class TokenManagerTest {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class accessToken이_주어지면 {
-            String accessToken = tokenManager.generate(id, List.of(role1, role2));
+            String accessToken = tokenManager.generate(id, roles);
 
             @Test
             @DisplayName("JwtPayload를 반환한다")
@@ -114,7 +109,7 @@ class TokenManagerTest {
                                                 LocalDateTime.now()
                                                         .plusSeconds(expireSeconds)
                                                         .truncatedTo(ChronoUnit.SECONDS)),
-                        () -> assertThat(jwtPayload.roles()).containsExactly(role1, role2));
+                        () -> assertThat(jwtPayload.roles()).containsAll(roles));
             }
         }
 

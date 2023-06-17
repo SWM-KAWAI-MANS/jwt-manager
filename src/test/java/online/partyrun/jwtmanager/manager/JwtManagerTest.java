@@ -1,14 +1,14 @@
 package online.partyrun.jwtmanager.manager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-
 import online.partyrun.jwtmanager.dto.JwtToken;
-
 import org.junit.jupiter.api.*;
+
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("JwtManagerTest 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -25,8 +25,7 @@ class JwtManagerTest {
     JwtManager jwtManager = new JwtManager(accessTokenManager, refreshTokenManager);
 
     String id = "박현준";
-    String role1 = "admin";
-    String role2 = "user";
+    Set<String> roles = Set.of("admin", "user");
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -38,7 +37,7 @@ class JwtManagerTest {
             @Test
             @DisplayName("JwtToken을 반환한다.")
             void returnJwtToken() {
-                final JwtToken result = jwtManager.generate(id, role1, role2);
+                final JwtToken result = jwtManager.generate(id, roles);
                 assertAll(
                         () -> assertThat(result.accessToken()).isNotBlank(),
                         () -> assertThat(result.refreshToken()).isNotBlank());
@@ -52,7 +51,7 @@ class JwtManagerTest {
             @Test
             @DisplayName("JwtToken을 반환한다.")
             void returnJwtToken() {
-                final JwtToken result = jwtManager.generate(id);
+                final JwtToken result = jwtManager.generate(id, Set.of());
                 System.out.println(result.accessToken());
                 assertAll(
                         () -> assertThat(result.accessToken()).isNotBlank(),
@@ -67,7 +66,7 @@ class JwtManagerTest {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class refreshToken이_주어지면 {
-            final String refreshToken = jwtManager.generate(id).refreshToken();
+            final String refreshToken = jwtManager.generate(id, roles).refreshToken();
 
             @Test
             @DisplayName("access token을 반환한다")
