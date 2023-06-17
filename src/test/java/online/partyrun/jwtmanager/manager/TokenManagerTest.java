@@ -1,10 +1,17 @@
 package online.partyrun.jwtmanager.manager;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+
 import online.partyrun.jwtmanager.dto.JwtPayload;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -15,10 +22,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("TokenManager 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -105,7 +108,12 @@ class TokenManagerTest {
 
                 assertAll(
                         () -> assertThat(jwtPayload.id()).isEqualTo(id),
-                        () -> assertThat(jwtPayload.expireAt()).isEqualTo(LocalDateTime.now().plusSeconds(expireSeconds).truncatedTo(ChronoUnit.SECONDS)),
+                        () ->
+                                assertThat(jwtPayload.expireAt())
+                                        .isEqualTo(
+                                                LocalDateTime.now()
+                                                        .plusSeconds(expireSeconds)
+                                                        .truncatedTo(ChronoUnit.SECONDS)),
                         () -> assertThat(jwtPayload.roles()).containsExactly(role1, role2));
             }
         }

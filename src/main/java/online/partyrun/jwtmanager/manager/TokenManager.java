@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 import online.partyrun.jwtmanager.dto.JwtPayload;
+
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
@@ -79,9 +80,9 @@ public class TokenManager {
         final Claims claims = parseClaims(accessToken);
         final String id = claims.get(ID, String.class);
         final List<String> roles = claims.get(ROLE, ArrayList.class);
-        final LocalDateTime expireAt = new Timestamp(claims.getExpiration().getTime()).toLocalDateTime();
+        final LocalDateTime expireAt =
+                new Timestamp(claims.getExpiration().getTime()).toLocalDateTime();
         return new JwtPayload(id, roles, expireAt);
-
     }
 
     private Claims parseClaims(String accessToken) {

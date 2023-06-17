@@ -1,12 +1,14 @@
 package online.partyrun.jwtmanager.manager;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import online.partyrun.jwtmanager.dto.JwtToken;
-import org.junit.jupiter.api.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+import online.partyrun.jwtmanager.dto.JwtToken;
+
+import org.junit.jupiter.api.*;
 
 @DisplayName("JwtManagerTest 클래스")
 @FieldDefaults(level = AccessLevel.PRIVATE)
