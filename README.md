@@ -40,9 +40,9 @@ dependencies {
 ### JwtGenerator
 The JwtGenerator interface provides the following methods:
 
-- **JwtToken generate(Map<String, Object> payload)**
+- **JwtToken generate(String id, String... roles)**
 
-  Generates a JWT token based on the provided payload. This method returns a JwtToken object containing the access token and refresh token.
+  Generates a JWT token based on the provided id and roles. This method returns a JwtToken object containing the access token and refresh token.
 
 - **String generateAccessToken(String refreshToken)**
 
@@ -51,8 +51,8 @@ The JwtGenerator interface provides the following methods:
 ### JwtExtractor
 The JwtExtractor interface provides the following method:
 
-- **Claims extract(String accessToken)**
+- **JwtPayload extract(String accessToken)**
   
-  Extracts the payload from the provided accessToken and returns it as a Claims object.
+  Extracts the payload from the provided accessToken and returns it as a JwtPayload object.
 
 Using the JwtGenerator and JwtExtractor interfaces, you can simplify the process of JWT token generation and extraction in your application, providing a more secure and efficient way to handle authentication and authorization.
