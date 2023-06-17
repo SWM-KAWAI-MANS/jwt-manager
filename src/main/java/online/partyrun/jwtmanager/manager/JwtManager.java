@@ -3,10 +3,13 @@ package online.partyrun.jwtmanager.manager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
 import online.partyrun.jwtmanager.JwtExtractor;
 import online.partyrun.jwtmanager.JwtGenerator;
 import online.partyrun.jwtmanager.dto.JwtPayload;
 import online.partyrun.jwtmanager.dto.JwtToken;
+
+import java.util.Set;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -16,10 +19,10 @@ public class JwtManager implements JwtGenerator, JwtExtractor {
     TokenManager refreshTokenManager;
 
     @Override
-    public JwtToken generate(String id) {
+    public JwtToken generate(String id, Set<String> roles) {
         return JwtToken.builder()
-                .accessToken(accessTokenManager.generate(id))
-                .refreshToken(refreshTokenManager.generate(id))
+                .accessToken(accessTokenManager.generate(id, roles))
+                .refreshToken(refreshTokenManager.generate(id, roles))
                 .build();
     }
 
@@ -30,7 +33,7 @@ public class JwtManager implements JwtGenerator, JwtExtractor {
 
     @Override
     public String generateAccessToken(String refreshToken) {
-        final JwtPayload extract = refreshTokenManager.extract(refreshToken);
-        return accessTokenManager.generate(extract.id());
+        final JwtPayload jwtPayload = refreshTokenManager.extract(refreshToken);
+        return accessTokenManager.generate(jwtPayload.id(), jwtPayload.roles());
     }
 }
