@@ -40,7 +40,7 @@ dependencies {
 ### JwtGenerator
 The JwtGenerator interface provides the following methods:
 
-- **JwtToken generate(String id, String... roles)**
+- **JwtToken generate(String id, Set<String> roles)**
 
   Generates a JWT token based on the provided id and roles. This method returns a JwtToken object containing the access token and refresh token.
 
