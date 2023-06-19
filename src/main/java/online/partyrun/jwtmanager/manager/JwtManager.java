@@ -32,8 +32,11 @@ public class JwtManager implements JwtGenerator, JwtExtractor {
     }
 
     @Override
-    public String generateAccessToken(String refreshToken) {
+    public JwtToken refresh(String refreshToken) {
         final JwtPayload jwtPayload = refreshTokenManager.extract(refreshToken);
-        return accessTokenManager.generate(jwtPayload.id(), jwtPayload.roles());
+        return JwtToken.builder()
+                .accessToken(accessTokenManager.generate(jwtPayload.id(), jwtPayload.roles()))
+                .refreshToken(refreshTokenManager.generate(jwtPayload.id(), jwtPayload.roles()))
+                .build();
     }
 }

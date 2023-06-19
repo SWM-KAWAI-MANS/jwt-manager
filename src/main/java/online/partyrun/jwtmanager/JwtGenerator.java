@@ -7,5 +7,5 @@ import java.util.Set;
 public interface JwtGenerator {
     JwtToken generate(String id, Set<String> roles);
 
-    String generateAccessToken(String refreshToken);
+    JwtToken refresh(String refreshToken);
 }
