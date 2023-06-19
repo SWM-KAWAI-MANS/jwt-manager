@@ -73,8 +73,12 @@ class JwtManagerTest {
             @Test
             @DisplayName("access token을 반환한다")
             void returnAccessToken() {
-                final String accessToken = jwtManager.generateAccessToken(refreshToken);
-                assertThat(accessToken).isNotBlank();
+                final JwtToken accessToken = jwtManager.refresh(refreshToken);
+                assertAll(
+                        () -> assertThat(accessToken).isNotNull(),
+                        () -> assertThat(accessToken.accessToken()).isNotBlank(),
+                        () -> assertThat(accessToken.refreshToken()).isNotBlank()
+                );
             }
         }
     }
