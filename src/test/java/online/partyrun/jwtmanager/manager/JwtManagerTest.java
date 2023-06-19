@@ -77,8 +77,7 @@ class JwtManagerTest {
                 assertAll(
                         () -> assertThat(accessToken).isNotNull(),
                         () -> assertThat(accessToken.accessToken()).isNotBlank(),
-                        () -> assertThat(accessToken.refreshToken()).isNotBlank()
-                );
+                        () -> assertThat(accessToken.refreshToken()).isNotBlank());
             }
         }
     }
