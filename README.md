@@ -24,7 +24,7 @@ repositories {
 2. Add the jwt-manager dependency to your app-level build.gradle file:
 ```
 dependencies {
-	      implementation 'com.github.SWM-KAWAI-MANS:jwt-manager:1.0.0'
+	      implementation 'com.github.SWM-KAWAI-MANS:jwt-manager:1.2.0'
 }
 ```
 
@@ -44,7 +44,7 @@ The JwtGenerator interface provides the following methods:
 
   Generates a JWT token based on the provided id and roles. This method returns a JwtToken object containing the access token and refresh token.
 
-- **String generateAccessToken(String refreshToken)**
+- **JwtToken refresh(String refreshToken)**
 
   Generates a new access token based on the provided refreshToken. This method returns the newly generated access token as a String.
 
