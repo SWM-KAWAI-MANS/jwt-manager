@@ -21,11 +21,9 @@ public class JwtConfig {
     @Bean
     public JwtManager jwtManager(
             @Value("${jwt.access-secret-key}") String accessKey,
-            @Value("${jwt.access-expire-second:#{1}}") Long accessExpireSecond,
-            @Value(
-                            "${jwt.refresh-secret-key:#{'DefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefault'}}")
-                    String refreshKey,
-            @Value("${jwt.refresh-expire-second:#{1}}") Long refreshExpireSecond) {
+            @Value("${jwt.access-expire-second:#{'1'}}") Long accessExpireSecond,
+            @Value("${jwt.refresh-secret-key:#{'DefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefault'}}") String refreshKey,
+            @Value("${jwt.refresh-expire-second:#{'1'}}") Long refreshExpireSecond) {
         log.info("Starting JwtManager");
         return new JwtManager(
                 tokenManager(accessKey, accessExpireSecond),
