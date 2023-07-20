@@ -24,7 +24,7 @@ repositories {
 2. Add the jwt-manager dependency to your app-level build.gradle file:
 ```
 dependencies {
-	      implementation 'com.github.SWM-KAWAI-MANS:jwt-manager:1.2.0'
+	      implementation 'com.github.SWM-KAWAI-MANS:jwt-manager:1.3.0'
 }
 ```
 
@@ -32,9 +32,9 @@ dependencies {
 
 ```
 - jwt.access-secret-key
-- jwt.access-expire-second
-- jwt.refresh-secret-key
-- jwt.refresh-expire-second
+- jwt.access-expire-second (Optional)
+- jwt.refresh-secret-key (Optional)
+- jwt.refresh-expire-second (Optional)
 ```
 
 ### JwtGenerator
