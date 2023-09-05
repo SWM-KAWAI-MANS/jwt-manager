@@ -4,17 +4,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
 import online.partyrun.jwtmanager.manager.JwtManager;
 import online.partyrun.jwtmanager.manager.TokenManager;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 @Slf4j
 @AutoConfiguration
 @RequiredArgsConstructor
+@ComponentScan(basePackages = "online.partyrun.jwtmanager.controller")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtConfig {
 
@@ -22,9 +22,8 @@ public class JwtConfig {
     public JwtManager jwtManager(
             @Value("${jwt.access-secret-key}") String accessKey,
             @Value("${jwt.access-expire-second:#{'1'}}") Long accessExpireSecond,
-            @Value(
-                            "${jwt.refresh-secret-key:#{'DefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefault'}}")
-                    String refreshKey,
+            @Value("${jwt.refresh-secret-key:#{'DefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefaultDefault'}}")
+            String refreshKey,
             @Value("${jwt.refresh-expire-second:#{'1'}}") Long refreshExpireSecond) {
         log.info("Starting JwtManager");
         return new JwtManager(
