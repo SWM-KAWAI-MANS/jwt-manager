@@ -3,7 +3,6 @@ package online.partyrun.jwtmanager.manager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
 import online.partyrun.jwtmanager.JwtExtractor;
 import online.partyrun.jwtmanager.JwtGenerator;
 import online.partyrun.jwtmanager.dto.JwtPayload;

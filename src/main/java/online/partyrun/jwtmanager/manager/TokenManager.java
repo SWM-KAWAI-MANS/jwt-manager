@@ -5,19 +5,19 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-
 import online.partyrun.jwtmanager.dto.JwtPayload;
-
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TokenManager {
