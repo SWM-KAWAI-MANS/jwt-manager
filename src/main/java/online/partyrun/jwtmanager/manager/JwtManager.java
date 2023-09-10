@@ -3,7 +3,6 @@ package online.partyrun.jwtmanager.manager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
 import online.partyrun.jwtmanager.JwtExtractor;
 import online.partyrun.jwtmanager.JwtGenerator;
 import online.partyrun.jwtmanager.dto.JwtPayload;
@@ -27,16 +26,21 @@ public class JwtManager implements JwtGenerator, JwtExtractor {
     }
 
     @Override
-    public JwtPayload extract(String accessToken) {
-        return accessTokenManager.extract(accessToken);
-    }
-
-    @Override
     public JwtToken refresh(String refreshToken) {
         final JwtPayload jwtPayload = refreshTokenManager.extract(refreshToken);
         return JwtToken.builder()
                 .accessToken(accessTokenManager.generate(jwtPayload.id(), jwtPayload.roles()))
                 .refreshToken(refreshTokenManager.generate(jwtPayload.id(), jwtPayload.roles()))
                 .build();
+    }
+
+    @Override
+    public JwtPayload extractAccessToken(String accessToken) {
+        return accessTokenManager.extract(accessToken);
+    }
+
+    @Override
+    public JwtPayload extractRefreshToken(String refreshToken) {
+        return refreshTokenManager.extract(refreshToken);
     }
 }
